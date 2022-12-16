@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./index.css" rel="stylesheet" />
+  </head>
+  <body class="mx-10">
+    <div class="flex flex-col justify-center items-center">
+      <button class=" self-end w-24 focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" id="logoutbutton">Logout</button>
+      
+      <h1 class="text-3xl font-bold">BIA Bulk Contact Adder</h1>
+      <h1 class="text-xl font-semibold">made by <a class="text-blue-400 underline" href="https://github.com/prathamskk">Pratham</a></h1>
+      <div id="logininfo"></div>
+      <div id="logininfoname"></div>
+      <div id="logininfonum"></div>
+      <canvas id="qrcode" class="w-0 h-0"></canvas>
+      <button class=" disabled:opacity-25 w-24 focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" id="qrbutton">Login</button>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+
+      <form id="myform" class="flex flex-col justify-center items-center">
+
+        <label for="groupname">Enter Announcement Group Name</label>
+        <input id="groupname" name="groupname" type="text" class="border border-black">
+        <label for="phonecsv">Select a Contacts CSV To add to the group:</label>
+        <input
+        type="file"
+        id="phonecsv"
+        name="phonecsv"
+        accept=".csv"
+        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+        />
+        <button>
+          <input
+          type="submit"
+          class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+          />
+        </button>
+      </form>
+    </div>
+<label for="output "><h2 class="text-3xl">STATUS</h2></label>
+    <div id="output" class="h-60 border-12 border border-red-400 rounded-md overflow-scroll"></div>
+  </body>
+  <script src="./index.js" type="module"></script>
+</html>
