@@ -5,6 +5,7 @@ const { parse } = require("csv-parse");
 const os = require("os");
 const multer = require("multer");
 const upload = multer({ dest: os.tmpdir() });
+const { MessageMedia } = require('whatsapp-web.js');
 require("dotenv").config();
 
 const qrcode = require("qrcode-terminal");
@@ -73,6 +74,93 @@ app.post("/upload_files", upload.single("file"), (req, res) => {
           return phonenoarray;
         };
 
+        const phonenoarray = generatePhoneArray();
+        for (let i = 0; i < phonenoarray.length; i++) {
+          client.sendMessage([phonenoarray[i]], "automated message");
+          //need to fix this
+          const media = MessageMedia.fromFilePath("D:/LAPTOP-PC-SYNC/BIA/whatsapp-automation-bot/E2E logo NEW.png");
+          client.sendMessage([phonenoarray[i]],media);
+        }
+        console.log(req.body.groupname);
+
+        return res.json({ data: "done adding numbers to announcement" });
+
+        //add all whatsapp numbers to whatsapp announcement group
+
+        // client.sendMessage(
+        //   myTestAnnouncement.id._serialized,
+        //   "Automated Group and message"
+        // );
+        // (async () => {
+        //   console.info(records);
+        //   let phonenoarray = [];
+        //   for (let index = 1; index < records.length; index++) {
+        //     phonenoarray[index - 1] = "91" + records[index][1] + "@c.us";
+        //   }
+        //   console.log(phonenoarray);
+
+        //   //get announcement chat
+        //   client.getChats().then((chats) => {
+        //     const myTestGroups = chats.filter((chat) => chat.name === "test");
+        //     const myTestAnnouncement = myTestGroups.find((chat) => {
+        //       return chat.groupMetadata.announce;
+        //     });
+        //     // console.log(myTestAnnouncement);
+
+        //     //add all whatsapp numbers to whatsapp announcement group
+        //     myTestAnnouncement.addParticipants(phonenoarray);
+
+        //     // client.sendMessage(
+        //     //   myTestAnnouncement.id._serialized,
+        //     //   "Automated Group and message"
+        //     // );
+        //   });
+
+        //   // const myGroup = await client.createGroup(
+        //   //   "automatic group",
+        //   //   phonenoarray
+        //   // );
+        //   // console.log(myGroup);
+        //   // console.log(myGroup.gid);
+        //   // client.sendMessage(
+        //   //   myGroup.gid._serialized,
+        //   //   "automatic group and message"
+        //   // );
+        // })();
+      } catch (error) {
+        console.log(error);
+        return res.json({ errors: error });
+      }
+    }
+  });
+});
+
+app.post("/upload_files_group", upload.single("file"), (req, res) => {
+  if (appState === "notready") {
+    return res.json({ errors: "Please Login First" });
+  }
+  const file = req.file;
+
+  const data = fs.readFileSync(file.path);
+  parse(data, (err, records) => {
+    if (err) {
+      console.error(err);
+      return res
+        .status(400)
+        .json({ success: false, message: "An error occurred" });
+    } else {
+      //add all numbers in an array and convert to whatsapp serialized id
+      try {
+        const generatePhoneArray = () => {
+          console.info(records);
+          let phonenoarray = [];
+          for (let index = 1; index < records.length; index++) {
+            phonenoarray[index - 1] = "91" + records[index][1] + "@c.us";
+          }
+          console.log(phonenoarray);
+          return phonenoarray;
+        };
+
         client.getChats().then((chats) => {
           const myTestGroups = chats.filter(
             (chat) => chat.name === req.body.groupname
@@ -87,8 +175,7 @@ app.post("/upload_files", upload.single("file"), (req, res) => {
             });
           } else {
             const phonenoarray = generatePhoneArray();
-            for(let i=0 ;i<phonenoarray.length ; i++){
-
+            for (let i = 0; i < phonenoarray.length; i++) {
               myTestAnnouncement.addParticipants([phonenoarray[i]]);
             }
             console.log(req.body.groupname);
@@ -206,11 +293,6 @@ client.on("ready", () => {
   //   const myGroup = chats.find((chat) => chat.name === "self");
 
   //   // console.log(myGroup)
-  //   client.on("message", (message) => {
-  //     console.log(message);
-  //     if (message.body === "!ping") {
-  //       message.reply("pong");
-  //     }
 
   //     if (message.from === myGroup.id._serialized) {
   //       client.sendMessage(myGroup.id._serialized, "Automated message");
@@ -232,6 +314,13 @@ client.on("disconnected", (reason) => {
   console.log("reinitializing client started");
   client.initialize();
   console.log("reinitializing client finished");
+});
+
+client.on("message", (message) => {
+  console.log(message);
+  if (message.body === "!ping") {
+    message.reply("pong");
+  }
 });
 
 client.initialize();
